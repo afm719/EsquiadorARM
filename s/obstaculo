@@ -1,0 +1,48 @@
+.data
+.extern "RANDOM"
+.text
+.globl obstaculos
+obstaculos:
+stmdb sp!, {r4-r9,lr}
+@r0 direccion de colina
+@r1 L_COLINA
+@r2 L_E
+@r3 nivel de dificultad
+
+mov r4,r0
+mov r5,r1
+mov r6,r2
+mov r7,r3
+sub r8, r6,#1
+mov r9, #0x59
+cmp r7,#0x30
+beq fin_obs
+cmp r7, #0x31
+bne sigue
+while_obs:
+	cmp r5,#0
+	beq fin_obs
+	mov r0,r8
+	BL RANDOM
+	strb r9,[r4,r0]
+	add r4,r4,r6
+	sub r5,r5,#1
+b while_obs
+
+sigue: cmp r7, #0x32
+while2:
+	cmp r5,#0
+	beq fin_obs
+	mov r0,r8
+	BL RANDOM
+	strb r9,[r4,r0]
+	mov r0,r8
+	BL RANDOM
+	strb r9,[r4,r0]
+	add r4,r4,r6
+	sub r5,r5,#1
+	b while2
+
+fin_obs:
+ldmia sp!,{r4-r9,pc}
+

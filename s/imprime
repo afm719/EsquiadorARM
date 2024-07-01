@@ -1,0 +1,26 @@
+.data
+.extern "print_integer"
+.text
+.globl _start1
+_start1:
+stmdb sp!, {r4-r7 ,lr}
+mov r4, r0
+mov r6,r3
+mov r5,r1
+mov r7, r2
+cmp r5, #100
+movlt r0,#0x30
+swilt 0x0
+cmp r5, #10
+movlt r0, #0x30
+swilt 0x0
+mov r0, r5
+BL print_integer
+mov r0,#0x20
+swi 0x0
+mov r0,r6
+swi 0x2
+mov r0,#0xA
+swi 0x0
+ldmia sp!, {r4-r7,pc}
+

@@ -1,0 +1,35 @@
+.data
+.extern "lee_boton"
+.text
+.globl _start2
+_start2:
+
+@parametro en r0 posicion inicial.
+stmdb sp!, {r4,lr}
+mov r4,r0
+mov r0, #2
+BL lee_boton
+cmp r0, #1
+swieq 0x11
+swi 0x4
+cmp r0, #0x66 @para finalizar el programa
+swieq 0x11
+
+cmp r0, #0x61
+bne dcha
+sub r4,r4,#1
+cmp r4,#0
+movlt r4,#1
+b fin
+dcha:
+cmp r0, #0x64
+addeq r4, r4,#1
+cmp r4,#31
+movgt r4,#31
+
+fin: mov r0,r4
+ldmia sp!,{r4,pc}
+
+
+
+

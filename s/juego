@@ -1,0 +1,86 @@
+       	.include "colina.s"
+       	.include "movimiento.s"
+       	.include "imprime.s"
+       	.include "choques.s"
+       	.extern "RANDOM"
+       	.extern "lee_boton"
+       	.include "obstaculo.s"
+       	.data
+Bienvenida: .asciz "Seleccione dificultad: 0 1 2\n"
+
+.text
+.globl _start
+_start:
+
+ldr r0,=Bienvenida
+swi 0x2
+
+LDR R4, =COLINA
+MOV R6, #1 @ posicion inicial del jugador
+MOV R5, #0 @ i=0
+MOV R8, #0 @choques
+MOV R10,#0X76
+
+while:
+mov r0,#1
+BL lee_boton
+cmp r0,#1
+bne while
+
+swi 0x4
+cmp r0,#0x30
+moveq r11,#10
+cmp r0,#0x31
+moveq r11,#8
+cmp r0,#0x32
+moveq r11,#5
+
+mov r1,#L_COLINA
+mov r2, #L_E
+mov r3,r0
+mov r0,r4
+BL obstaculos
+
+mov r0, #31
+BL RANDOM
+mov r6,r0
+mov r0, #20
+BL RANDOM
+mov r5,r0
+mov r2,#L_E
+mul r1,r0,r2
+add r4,r4,r1
+
+bucle:
+ cmp r5, #L_COLINA
+ beq FIN
+ strb r10, [r4,r6]
+ mov r0,r6
+ mov r1,r5
+ mov r2,r10
+ mov r3,r4
+ BL _start1
+ mov r0,r6
+ BL _start2
+ mov r6,r0
+ mov r0,r4 @colina
+ mov r1,r6 @posicion del jugador
+ BL _choques
+ mov r10,r0
+ cmp r10,#0x2A
+ addeq r8,r8,#1
+ cmp r8, r11
+ beq FIN
+ add r4,r4,#L_E
+ add r5,r5,#1
+ b bucle
+
+FIN:
+swi 0x11
+
+
+
+
+
+
+
